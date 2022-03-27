@@ -7,6 +7,8 @@ import vShader from './shaders/vertex.glsl.js';
 import fShader from './shaders/fragment.glsl.js';
 import './App.css';
 
+import uart from "espruino-ble-uart";
+
 const sensorData = {
   s1: {
     x: 1,
@@ -107,8 +109,21 @@ const pressureMaterial = new THREE.ShaderMaterial({
 });
 
 const wireframeMaterial = new THREE.MeshStandardMaterial({
-  wireframe: true
+  wireframe: true,
+  wireframeLinewidth: 10.0,
 });
+
+const buttonPress = () => {
+  console.log("Trying to open Bluetooth Menu...");
+  navigator.bluetooth.requestDevice({acceptAllDevices: true})
+  .then(device => { 
+    console.log("CONNECTED!")
+    console.log(device) 
+  })
+  .catch(error => { 
+    console.error(error); 
+  });
+};
 
 const Visualization = () => {
   const ref = useRef();
@@ -147,7 +162,10 @@ const Scene = () => {
 
 const App = () => {
   return (
-    <Scene />
+    <div id="app">
+      <button onClick={buttonPress}>Connect to Ball...</button>
+      <Scene />
+    </div>
   )
 }
 
