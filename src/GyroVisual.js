@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 const pointSize = 0.1;
 
-const gyroData = [
+const posData = [
     [-0.9, 1.3, 2.2],
     [-0.5, 0.9, 1.8],
     [-0.2, 0.7, 1.3],
@@ -41,8 +41,8 @@ const GyroVisual = () => {
             <color attach="background" args={["grey"]} />
             <OrbitControls />
             <Suspense fallback={null}>
-                {gyroData.map((gPos, index) => {
-                    return <GyroPoint key={index} fadePosition={index / gyroData.length} pointPosition={gPos} />
+                {posData.map((gPos, index) => {
+                    return <GyroPoint key={index} fadePosition={index / posData.length} pointPosition={gPos} />
                 })}
             </Suspense>
             <primitive object={new THREE.AxesHelper(5)} />
