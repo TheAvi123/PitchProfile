@@ -7,8 +7,9 @@ import vShader from './shaders/vertex.glsl.js';
 import fShader from './shaders/fragment.glsl.js';
 
 const visualizationSize = 2;
+const interpFactor = 0.02;
 
-const sensorData = {
+const defaultData = {
     s1: {
         x: 1,
         y: 0,
@@ -86,16 +87,16 @@ const sensorData = {
 let sPositions = []
 let sPressures = []
 
-for (let sensorName in sensorData) {
-    let sensor = sensorData[sensorName]
+for (let sensorName in defaultData) {
+    let sensor = defaultData[sensorName]
     sPositions.push(new THREE.Vector3(sensor.x, sensor.y, sensor.z));
     sPressures.push(sensor.pressure);
 }
 
 const gui = new dat.GUI();
 
-for (var sensor of Object.keys(sensorData)) {
-    gui.add(sensorData[sensor], "pressure", 0, 1, 0.01)
+for (var sensor of Object.keys(defaultData)) {
+    gui.add(defaultData[sensor], "pressure", 0, 1, 0.01)
 }
 
 const pressureMaterial = new THREE.ShaderMaterial({
@@ -112,13 +113,25 @@ const wireframeMaterial = new THREE.MeshStandardMaterial({
     wireframeLinewidth: 10.0,
 });
 
-const Visualization = () => {
+
+const Visualization = (props) => {
     const ref = useRef();
     useFrame(() => {
+        let oldPressures = sPressures.slice();
         sPressures = []
-        for (let sensorName in sensorData) {
-            let sensor = sensorData[sensorName]
-            sPressures.push(sensor.pressure);
+        if (props.pressureData) {
+            let index = 0;
+            for (let sensorName in props.pressureData) {
+                let pressure = props.pressureData[sensorName]
+                let fadePressure = (1-interpFactor) * oldPressures[index] + interpFactor * pressure;
+                sPressures.push(fadePressure);
+                index += 1;
+            }
+        } else {
+            for (let sensorName in defaultData) {
+                let sensor = defaultData[sensorName]
+                sPressures.push(sensor.pressure);
+            }
         }
         ref.current.material.uniforms.sensorPressures.value = sPressures
     })
@@ -132,13 +145,13 @@ const Visualization = () => {
     )
 }
 
-const PressureBall = () => {
+const PressureBall = (props) => {
     return (
         <Canvas>
             <color attach="background" args={["grey"]} />
             <OrbitControls />
             <Suspense fallback={null}>
-                <Visualization />
+                <Visualization pressureData={props.pressureData}/>
             </Suspense>
             <mesh
                 scale={visualizationSize}

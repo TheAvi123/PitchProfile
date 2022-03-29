@@ -5,19 +5,19 @@ import * as THREE from "three";
 
 const pointSize = 0.1;
 
-const posData = [
+const defaultPosData = [
     [-0.9, 1.3, 2.2],
     [-0.5, 0.9, 1.8],
-    [-0.2, 0.7, 1.3],
+    [-0.2, 0.7, 1.5],
     [0.0, 0.4, 1.2],
-    [0.6, 0.2, 1.0],
+    [0.3, 0.2, 1.0],
     [0.8, 0.0, 0.7],
-    [1.1, 0.5, 0.3],
+    [1.1, 0.4, 0.4],
     [1.5, 0.7, 0.1],
-    [1.8, 1.2, -0.3],
+    [1.8, 1.2, -0.2],
     [2.0, 1.6, -0.5],
-    [2.5, 1.9, -0.7],
-    [2.8, 1.7, -1.0],
+    [2.5, 1.9, -0.8],
+    [2.8, 1.7, -1.2],
 ]
 
 const calculateFadeColor = (fadePos) => {
@@ -41,8 +41,8 @@ const GyroVisual = () => {
             <color attach="background" args={["grey"]} />
             <OrbitControls />
             <Suspense fallback={null}>
-                {posData.map((gPos, index) => {
-                    return <GyroPoint key={index} fadePosition={index / posData.length} pointPosition={gPos} />
+                {defaultPosData.map((gPos, index) => {
+                    return <GyroPoint key={index} fadePosition={index / defaultPosData.length} pointPosition={gPos} />
                 })}
             </Suspense>
             <primitive object={new THREE.AxesHelper(5)} />
