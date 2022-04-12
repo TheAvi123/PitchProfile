@@ -124,6 +124,8 @@ const Visualization = (props) => {
             for (let sensorName in props.pressureData) {
                 let pressure = props.pressureData[sensorName]
                 let fadePressure = (1-interpFactor) * oldPressures[index] + interpFactor * pressure;
+                // fadePressure *= 1.2;
+                fadePressure = Math.min(Math.max(fadePressure, 0), 1);
                 sPressures.push(fadePressure);
                 index += 1;
             }
